@@ -146,17 +146,19 @@ namespace Test2
             }
         }
         [Test]
-        [TestCaseSource("GetTestCaseDatasFromExcels")]
-        public void TestCalcConca()
+        [TestCaseSource("GetTestCaseDatasFromExcel")]
+        public void TestCalcConca(double a, double b, double expected)
         {
             Test();
-            driver.FindElement(By.XPath("//input[@id='number1Field']")).SendKeys("16");
-            driver.FindElement(By.XPath("//input[@id='number2Field']")).SendKeys("11");
+            string num1 = a.ToString();
+            string num2 = b.ToString();
+            driver.FindElement(By.XPath("//input[@id='number1Field']")).SendKeys(num1);
+            driver.FindElement(By.XPath("//input[@id='number2Field']")).SendKeys(num2);
             driver.FindElement(By.XPath("//option[normalize-space()='Concatenate']")).Click();
             driver.FindElement(By.XPath("//input[@id='calculateButton']")).Click();
             Thread.Sleep(1000);
-            string actual = driver.FindElement(By.XPath("//input[@id='numberAnswerField']")).GetAttribute("value");
-            string expected = "16" + "11";
+            string result = driver.FindElement(By.XPath("//input[@id='numberAnswerField']")).GetAttribute("value");
+            double actual = Convert.ToDouble(result);
             if (actual != expected)
             {
                 Console.WriteLine(actual);
