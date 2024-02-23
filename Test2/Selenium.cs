@@ -45,7 +45,7 @@ namespace Test2
             }
             else
             {
-                Console.WriteLine("Pass");
+                Console.WriteLine("Pass.");
             }
 
         }
