@@ -196,10 +196,14 @@ namespace Test2
                 var worksheet = excelPackage.Workbook.Worksheets["Sheet1"];
 
                 // Ghi dữ liệu vào các ô trong Sheet
-                int lastRow = worksheet.Dimension.End.Row;
+                int lastRow = 1;
+                while (worksheet.Cells[lastRow, 4].Value != null)
+                {
+                    lastRow++;
+                }
 
                 // Ghi dữ liệu vào ô ở dòng mới sau dòng cuối cùng
-                worksheet.Cells[lastRow + 1, 4].Value = Actual;
+                worksheet.Cells[lastRow, 4].Value = Actual;
 
                 // Lưu tệp Excel
                 excelPackage.Save();
