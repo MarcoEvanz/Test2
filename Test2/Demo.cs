@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using ExcelDataReader;
+using OfficeOpenXml;
+using NUnit.Framework.Interfaces;
 
 namespace Test2
 {
@@ -42,6 +44,8 @@ namespace Test2
             options.AddArgument("--start-maximized");
             ChromeDriverService service = ChromeDriverService.CreateDefaultService("D:\\chromedriver-win64");
             driver = new ChromeDriver(service, options);
+
+
         }
         [Test]
         public void Test()
@@ -147,6 +151,7 @@ namespace Test2
         }
         [Test]
         [TestCaseSource("GetTestCaseDatasFromExcel")]
+                
         public void TestCalcConca(double a, double b, double expected)
         {
             Test();
@@ -171,11 +176,56 @@ namespace Test2
                 Console.WriteLine(expected);
                 Console.WriteLine("True");
             }
+            WriteDataToExcel(Convert.ToString(actual));
         }
         [TearDown]
         public void TearDown()
         {
+            
             driver.Quit();
         }
+        public void WriteDataToExcel(String Actual)
+        {
+            // Đường dẫn của tệp Excel đích
+            string excelFilePath = "TestCaseData.xlsx";
+
+            // Tạo một tệp Excel mới
+            using (var excelPackage = new ExcelPackage(new FileInfo(excelFilePath)))
+            {
+                // Lấy hoặc tạo một Sheet có tên "Result"
+                var worksheet = excelPackage.Workbook.Worksheets["Sheet1"];
+
+                // Ghi dữ liệu vào các ô trong Sheet
+                int lastRow = worksheet.Dimension.End.Row;
+
+                // Ghi dữ liệu vào ô ở dòng mới sau dòng cuối cùng
+                worksheet.Cells[lastRow + 1, 4].Value = Actual;
+
+                // Lưu tệp Excel
+                excelPackage.Save();
+            }
+
+            Console.WriteLine("Data has been written to Excel successfully.");
+        }
+        //public static void WriteDataToExcel(IEnumerable<TestCaseData> testData, string excelFilePath)
+        //{
+        //    using (var excelPackage = new ExcelPackage(new FileInfo(excelFilePath)))
+        //    {
+        //        var worksheet = excelPackage.Workbook.Worksheets["Data"] ?? excelPackage.Workbook.Worksheets.Add("Data");
+
+        //        int row = 1;
+        //        foreach (var data in testData)
+        //        {
+        //            worksheet.Cells[row, 1].Value = data.Arguments[0];
+        //            worksheet.Cells[row, 2].Value = data.Arguments[1];
+        //            worksheet.Cells[row, 3].Value = data.Arguments[2];
+        //            row++;
+        //        }
+
+        //        excelPackage.Save();
+        //    }
+
+        //    Console.WriteLine("Data has been written to Excel successfully.");
+        //}
     }
 }
